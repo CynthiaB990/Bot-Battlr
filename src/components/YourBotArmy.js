@@ -1,28 +1,25 @@
 import React from "react";
+import BotCard from "./BotCard";
 
-function YourBotArmy({ botsListed }) {
-  const botsListedArray = botsListed.map((bot) => {
+function YourBotArmy({ bots, removeBot, deleteBot }) {
+  //your bot army code here...
+  const armyItem = bots.map((bot) => {
     return (
-      <div className="column" key={bot.id}>
-        <div className="ui card">
-          <div className="content">
-            <div className="header">{bot.name}</div>
-            <div className="meta">
-              <span className="date">{bot.date}</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <BotCard
+        key={bot.id}
+        bot={bot}
+        clickEvent={removeBot}
+        deleteBot={deleteBot}
+      />
     );
   });
-  console.log(botsListedArray);
 
   return (
-    <div className="ui segment inverted olive bot-army">
-      <div className="ui five column grid">
-        <div className="row bot-army-row">
-          <h2>Your Bot Army</h2>
-          {botsListed}
+    <div style={{ background: "olive" }}>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", maxWidth: "1000px" }}>
+          {/*...and here...*/}
+          {armyItem}
         </div>
       </div>
     </div>

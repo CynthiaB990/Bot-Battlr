@@ -6,50 +6,47 @@ const botTypeClasses = {
   Support: "icon plus circle",
   Medic: "icon ambulance",
   Witch: "icon magic",
-  Captain: "icon star"
+  Captain: "icon star",
 };
 
-const BotCard = props => {
+function BotCard({ bot, clickEvent, deleteBot }) {
   return (
-    <div className="ui column">
-      <div
-        className="ui card"
-        key={props.bot.id}
-        onClick={() => console.log("add code to connect event listener")}
-      >
-        <div className="image">
-          <img alt="oh no!" src={props.bot.avatar_url} />
+    <div style={{ display: "inline-block" }}>
+      <div style={{ cursor: "pointer" }} key={bot.id} onClick={() => clickEvent(bot)}>
+        <div>
+          <img alt="oh no!" src={bot.avatar_url} style={{ borderRadius: "50%" }} />
         </div>
-        <div className="content">
-          <div className="header">
-            {props.bot.name}
-            <i className={botTypeClasses[props.bot.bot_class]} />
+        <div>
+          <div>
+            {bot.name}
+            <i className={botTypeClasses[bot.bot_class]} />
           </div>
-          <div className="meta text-wrap">
-            <small>{props.bot.catchphrase}</small>
+          <div style={{ maxWidth: "150px" }}>
+            <small>{bot.catchphrase}</small>
           </div>
         </div>
-        <div className="extra content">
+        <div>
           <span>
             <i className="icon heartbeat" />
-            {props.bot.health}
+            {bot.health}
           </span>
 
           <span>
             <i className="icon lightning" />
-            {props.bot.damage}
+            {bot.damage}
           </span>
           <span>
             <i className="icon shield" />
-            {props.bot.armor}
+            {bot.armor}
           </span>
           <span>
-            <div className="ui center aligned segment basic">
+            <div style={{ textAlign: "center" }}>
               <button
-                className="ui mini red button"
-                onClick={() =>
-                  console.log("add code to connect event listener")
-                }
+                style={{ padding: "0", background: "none", border: "none", color: "red" }}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  deleteBot(bot);
+                }}
               >
                 x
               </button>
@@ -59,6 +56,6 @@ const BotCard = props => {
       </div>
     </div>
   );
-};
+}
 
 export default BotCard;
