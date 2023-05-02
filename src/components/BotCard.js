@@ -10,11 +10,12 @@ const botTypeClasses = {
 };
 
 function BotCard({ bot, clickEvent, deleteBot }) {
+  
   return (
-    <div style={{ display: "inline-block" }}>
+    <div className="bot-card">
       <div style={{ cursor: "pointer" }} key={bot.id} onClick={() => clickEvent(bot)}>
         <div>
-          <img alt="oh no!" src={bot.avatar_url} style={{ borderRadius: "50%" }} />
+          <img alt="OH NO!" src={bot.avatar_url} style={{ borderRadius: "50%" }} />
         </div>
         <div>
           <div>

@@ -3,7 +3,7 @@ import BotCard from "./BotCard";
 
 function YourBotArmy({ bots, removeBot, deleteBot }) {
   //your bot army code here...
-  const armyItem = bots.map((bot) => {
+  const botArmy = bots.map((bot) => {
     return (
       <BotCard
         key={bot.id}
@@ -19,7 +19,7 @@ function YourBotArmy({ bots, removeBot, deleteBot }) {
       <div style={{ display: "flex", justifyContent: "center" }}>
         <div style={{ display: "flex", flexWrap: "wrap", maxWidth: "1000px" }}>
           {/*...and here...*/}
-          {armyItem}
+          {botArmy}
         </div>
       </div>
     </div>

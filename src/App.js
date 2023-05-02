@@ -1,90 +1,55 @@
 import React, { useEffect, useState } from "react";
 import './App.css';
-import BotCollection from './components/BotCollection'
-import YourBotArmy from './components/YourBotArmy'
-import BotSpecs from './components/BotSpecs'
+import BotCollection from "./components/BotCollection";
+import YourBotArmy from "./components/YourBotArmy";
 
 function App() {
-  const [botCollection, setBotCollection] = useState([]);
-  const [filteredCollection, setFilteredCollection] = useState([]);
-  const [botArmy, setBotArmy] = useState([]);
-  const [collectionVisible, setCollectionVisible] = useState(true);
-  const [botSpecs, setBotSpecs] = useState({});
+
+  const [bots, setBots] = useState([]);
 
   useEffect(() => {
-    fetch(`http://localhost:8002/bots`)
-      .then(res => res.json())
-      .then(bot => {
-        setBotCollection(bot);
-        setFilteredCollection(bot);
-      });
+    function fetchData() {
+      return fetch(`http://localhost:8001/bots`)
+        .then((resp) => resp.json())
+        .then((data) => {
+          setBots(data);
+        });
+    }
+
+    fetchData();
   }, []);
 
-  const addToArmy = (bot) => {
-    const newCollection = filteredCollection.filter(
-      (card) => card.bot_class !== bot.bot_class
-    );
-    setFilteredCollection(newCollection);
-    setBotArmy([...botArmy, bot]);
-    setCollectionVisible(true);
-  };
+  function enlistBot(bot) {
+    setBots(bots.map((b) => (b.id === bot.id ? { ...b, army: true } : b)));
+  }
 
-  const removeFromArmy = (bot) => {
-    const newArmy = botArmy.filter((card) => card.id !== bot.id);
-    const armyClasses = newArmy.map((bot) => bot.bot_class);
-    const newCollection = botCollection.filter((bot) => {
-      console.log("Filter:", !armyClasses.includes(bot.bot_class));
-      return !armyClasses.includes(bot.bot_class);
-    });
-    console.log("newCollection", newCollection);
+  function removeBot(bot) {
+    setBots(bots.map((b) => (b.id === bot.id ? { ...b, army: false } : b)));
+  }
 
-    setBotArmy(newArmy);
-    setFilteredCollection(newCollection);
-  };
-
-  const removeBotPermanently = (bot) => {
-    let newCollection = botCollection.filter((card) => card !== bot);
-    let newFilteredCollection = filteredCollection.filter(
-      (card) => card !== bot
-    );
-    let newArmy = botArmy.filter((card) => card !== bot);
-
-    setBotCollection(newCollection);
-    setFilteredCollection(newFilteredCollection);
-    setBotArmy(newArmy);
-
+  function deleteBot(bot) {
     fetch(`http://localhost:8001/bots/${bot.id}`, {
-      method: "DELETE",
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
     })
-      .then((response) => response.json())
-      .then((result) => console.log(result));
-  };
-
-  const displayBotSpecs = (bot) => {
-    setCollectionVisible(false);
-    setBotSpecs(bot);
-  };
-
-  const displayBotCollection = () => {
-    setCollectionVisible(true);
-  };
+    .then(response => response.json())
+    .then(() => {
+    const deletedBot = bots.filter((b) => b.id !== bot.id);
+    setBots((bots) => deletedBot);
+  })
+}
 
   return (
     <div>
       <YourBotArmy
-        bots={botArmy}
-        action={removeFromArmy}
-        removeCard={removeBotPermanently}
+        bots={bots.filter((b) => b.army)}
+        removeBot={removeBot}
+        deleteBot={deleteBot}
       />
-      {collectionVisible ? (
-        <BotCollection
-          botCollection={filteredCollection}
-          action={displayBotSpecs}
-          removeCard={removeBotPermanently}
-        />
-      ) : (
-        <BotSpecs bot={botSpecs} back={displayBotCollection} enlist={addToArmy} />
-      )}
+      <BotCollection bots={bots} enlistBot={enlistBot} deleteBot={deleteBot} />
     </div>
   );
 }
